@@ -1,0 +1,172 @@
+# How Output Port Drag Lines Work in SwitchCase.jsx
+
+## Overview
+The SwitchCase component in the Designer system has multiple output ports (one for each case plus a default case) that allow users to create drag-and-drop connections between blocks. When a user clicks and drags from an output port, a visual "drag line" (also called a "rubber band wire") appears and follows the mouse cursor until it's released over a valid input port on another block.
+
+## Key Components Involved
+
+### 1. SwitchCase.jsx Component Structure
+The SwitchCase component renders:
+- A main switch value input field
+- Multiple case rows (each with a condition input and output port)
+- A default case row with its own output port
+- Each output port is represented as a magenta (#ff00ff) rectangle positioned at the right side of its row
+
+### 2. Output Port Implementation in SwitchCase.jsx
+Each output port in SwitchCase has these key attributes:
+
+```jsx
+// For case-specific output ports (index-based):
+<div 
+  style={{
+    position: 'absolute',
+    right: '-6px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '10px',
+    height: '2px',
+    backgroundColor: outputPortColor, // #ff00ff (magenta)
+    borderRadius: '0',
+    boxShadow: selectedPart === `output-${index}` ? `0 0 8px ${outputPortColor}` : 'none',
+    transition: 'box-shadow 0.2s ease-in-out',
+    cursor: 'crosshair'
+  }}
+  onClick={(e) => {
+    e.stopPropagation();
+    setSelectedPart(selectedPart === `output-${index}` ? null : `output-${index}`);
+  }}
+  onMouseDown={(e) => handleOutputMouseDown(e, index)}
+></div>
+
+// For the default output port:
+onMouseDown={(e) => handleOutputMouseDown(e, 'default')}
+```
+
+### 3. Connection Initiation: handleOutputMouseDown
+When a user clicks on an output port, the `handleOutputMouseDown` function is called:
+
+```jsx
+const handleOutputMouseDown = (e, index) => {
+  e.stopPropagation();
+  e.preventDefault(); 
+  if (onConnectionStart) {
+    onConnectionStart(id, `output-${index}`, e);
+  }
+};
+```
+
+This function:
+- Prevents event bubbling with `e.stopPropagation()`
+- Calls the `onConnectionStart` prop passed from the parent component
+- Passes the block ID, port type (e.g., `output-0`, `output-1`, or `output-default`), and the mouse event
+
+**Note on port types**: 
+- Case output ports: `output-0`, `output-1`, `output-2`, etc. (numeric indices)
+- Default output port: `output-default` (string "default" as index)
+
+### 4. Connection Flow Through Parent Components
+The connection flow follows this hierarchy:
+```
+SwitchCase.jsx → BlockRenderer.jsx → Designer Component → useFlowConnections hook
+```
+
+1. **BlockRenderer.jsx** passes `onConnectionStart` and `onConnectionEnd` props to SwitchCase
+2. These props come from the main Designer component which uses the `useFlowConnections` hook
+3. The `useFlowConnections` hook manages the connection state and visual feedback
+
+### 5. useFlowConnections Hook
+The `startConnection` function in `useFlowConnections.js` handles the drag line creation:
+
+```jsx
+const startConnection = useCallback((blockId, portType, e, workspaceRef) => {
+  // Calculate start position from the clicked port
+  const startX = connectionRect.left + connectionRect.width / 2 - workspaceRect.left;
+  const startY = connectionRect.top + connectionRect.height / 2 - workspaceRect.top;
+  
+  // Set active wire state for visual feedback
+  setActiveWire({
+    sourceId: blockId,
+    sourcePort: portType,
+    startX,
+    startY,
+    currentX: startX,
+    currentY: startY
+  });
+  
+  // Add mouse move/up listeners for drag tracking
+  // ...
+}, []);
+```
+
+### 6. Visual Feedback: ConnectionOverlay.jsx
+The `ConnectionOverlay` component renders the drag line in real-time:
+
+```jsx
+{activeWire && (
+  <path
+    d={`M ${activeWire.startX} ${activeWire.startY} L ${activeWire.currentX} ${activeWire.currentY}`}
+    stroke="url(#gradient-highlight)"
+    strokeWidth="2"
+    fill="none"
+    className="connection-line-drawing"
+  />
+)}
+```
+
+### 7. Port Position Calculation
+For SwitchCase's row-specific output ports, `ConnectionOverlay.jsx` has special logic:
+
+```jsx
+if (portType.startsWith('output-')) {
+  const rowIndex = parseInt(portType.split('-')[1]);
+  const rows = blockElement.querySelectorAll('[style*="position: relative"][style*="height: 28px"]');
+  if (rows.length > rowIndex) {
+    const row = rows[rowIndex];
+    const outputPort = row.querySelector('[style*="background-color: #ff00ff"]');
+    // Calculate position relative to workspace
+  }
+}
+```
+
+**Note on default case handling**: The `parseInt('default')` in the port position calculation will return `NaN`, so the default output port may not be correctly located by this logic. It would fall back to the regular output port positioning logic, which looks for a bottom bar element instead of the row-specific port.
+
+## Complete Drag Line Flow
+
+1. **Mouse Down on Output Port**: User clicks on a magenta output port rectangle
+2. **Event Handling**: `handleOutputMouseDown` → `onConnectionStart` → `useFlowConnections.startConnection`
+3. **Visual Feedback**: `activeWire` state is set, causing `ConnectionOverlay` to render a line
+4. **Mouse Movement**: Mouse move events update `activeWire.currentX/Y`, making the line follow the cursor
+5. **Mouse Up on Input Port**: When released over a valid input port (teal/green rectangle), a connection is created
+6. **Connection Creation**: New connection is added to Redux state and local connections array
+
+## Special Considerations for SwitchCase
+
+1. **Multiple Output Ports**: Unlike most blocks with a single output port, SwitchCase has multiple ports (one per case + default)
+2. **Port Identification**: Ports are identified as `output-0`, `output-1`, etc., or `output-default`
+3. **Dynamic Positioning**: Output ports are positioned relative to their case rows, which can change height dynamically
+4. **Visual Feedback**: Ports highlight with glow effect when selected/hovered
+
+## Key Files and Their Roles
+
+- `frontend/src/components/Designer/Blocks/SwitchCase.jsx` - Renders output ports and handles mouse events
+- `frontend/src/components/Designer/hooks/useFlowConnections.js` - Manages connection logic and state
+- `frontend/src/components/Designer/components/ConnectionOverlay.jsx` - Renders visual drag lines
+- `frontend/src/components/Designer/components/BlockRenderer.jsx` - Passes connection handlers to blocks
+- `frontend/src/components/Designer/components/Designer.jsx` (not shown) - Main component that orchestrates everything
+
+## Testing the Feature
+
+To test the drag line functionality:
+1. Add a SwitchCase block to the workspace
+2. Click and hold on any magenta output port (right side of a case row)
+3. Drag the mouse - a colored line should follow your cursor
+4. Release over a valid input port (teal/green rectangle on another block)
+5. A permanent connection line should appear between the blocks
+
+## Troubleshooting
+
+If drag lines don't appear:
+1. Check that `onConnectionStart` prop is being passed to SwitchCase
+2. Verify the output port has `cursor: 'crosshair'` and `onMouseDown` handler
+3. Ensure `useFlowConnections` hook is properly initialized in the parent component
+4. Check browser console for errors in event handlers

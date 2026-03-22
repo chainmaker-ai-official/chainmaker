@@ -1,0 +1,20 @@
+{
+  "name": "blockchain-fullstack",
+  "version": "1.0.0",
+  "description": "Fullstack blockchain project with React frontend and Rust backend",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && cargo run",
+    "install:all": "npm run install:frontend",
+    "install:frontend": "cd frontend && npm install",
+    "start": "npm run dev",
+    "test": "echo \"No tests configured\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["blockchain", "react", "rust", "axum", "vite"],
+  "author": "",
+  "license": "MIT"
+}

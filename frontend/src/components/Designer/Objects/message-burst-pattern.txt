@@ -1,0 +1,135 @@
+================================================================================
+                     BANG TO LOG MESSAGE BURST PATTERN
+================================================================================
+
+OVERVIEW
+--------
+This document explains how the Bang block triggers immediate data display in the 
+Log block when clicked, using Redux for state management.
+
+ARCHITECTURE
+------------
+
+1. REDUX SLICE (bangSlice.js)
+   - Stores Bang trigger events: { [logBlockId]: { sourceBlockId, label, timestamp } }
+   - Contains triggerCount counter to force re-renders
+   - Actions:
+     * triggerBang: Updates trigger data and increments counter
+     * clearBangTriggers: Clears all triggers
+     * clearBangTrigger: Clears specific trigger
+
+2. BLOCKRENDERER (BlockRenderer.jsx)
+   - Uses Redux useSelector to get bangTriggers
+   - Uses Redux useDispatch to dispatch triggerBang action
+   - Maintains draggableBlockLabels (global object) to store DraggableBlock text
+
+3. BANG COMPONENT (Bang.jsx)
+   - Has onBang callback prop
+   - When clicked (toggle), fires onBang(id, isOn)
+   - Output port connects to DraggableBlock input port
+
+4. LOG COMPONENT (Log.jsx)
+   - Same draggable properties as DraggableBlock
+   - Input port receives connection from DraggableBlock
+   - Displays text from inputData prop (set by BlockRenderer)
+   - Only shows data when Redux has trigger data for it
+
+================================================================================
+                              DATA FLOW
+================================================================================
+
+STEP 1: User types in DraggableBlock
+   └─> Double-click to edit
+   └─> Type any text
+   └─> onLabelChange callback fires
+   └─> BlockRenderer updates draggableBlockLabels[id] = newLabel
+   └─> Also updates via useEffect when block.label changes
+
+STEP 2: User connects Bang → DraggableBlock → Log
+   Bang (output port) ──> DraggableBlock (input port)
+   DraggableBlock (output port) ──> Log (input port)
+   
+   These connections are stored in Redux (connectionsSlice)
+
+STEP 3: User clicks Bang
+   └─> Bang component fires onBang(bangId, true)
+   └─> BlockRenderer.handleBang() callback is invoked
+   
+   Inside handleBang():
+   a) Find outgoing connections from Bang
+   b) For each connected DraggableBlock:
+      - Get its label from draggableBlockLabels
+      - Find blocks connected to it (including Log)
+      - Dispatch triggerBang({ targetLogId, sourceBlockId, label })
+   
+   c) Also scan all connections for any Log connected to DraggableBlock
+      - Dispatch triggerBang for each
+
+STEP 4: Redux updates state
+   └─> triggerBang action is dispatched
+   └─> bangSlice reducer executes:
+      - state.triggers[targetLogId] = { sourceBlockId, label, timestamp }
+      - state.triggerCount += 1
+   └─> React re-renders all components using selectBangTriggers
+
+STEP 5: Log receives updated data
+   └─> BlockRenderer reads: bangTriggers[logBlockId]
+   └─> Passes label to Log as inputData prop
+   └─> Log displays the text IMMEDIATELY
+
+================================================================================
+                         WHY REDUX FOR IMMEDIACY?
+================================================================================
+
+PROBLEM:
+- Using global JavaScript objects (bangTriggerData) doesn't trigger React re-renders
+- React needs state changes to know it should re-render components
+
+SOLUTION:
+- Redux provides centralized state management
+- When triggerBang dispatches, ALL components using selectBangTriggers re-render
+- The triggerCount ensures even if label is same, counter change triggers update
+
+KEY BENEFITS:
+1. Immediate reactivity - no polling or manual refresh needed
+2. Centralized state - easy to debug and track
+3. Predictable updates - Redux guarantees consistent state changes
+4. No prop drilling - Log gets data via selector, not through multiple components
+
+================================================================================
+                            FILES INVOLVED
+================================================================================
+
+src/redux/slices/bangSlice.js
+  - Redux slice for Bang triggers
+  
+src/redux/store.js
+  - Added bangReducer to store configuration
+  
+src/components/Designer/components/BlockRenderer.jsx
+  - Imports Redux hooks and actions
+  - handleBang dispatches triggerBang
+  - Log reads bangTriggers from Redux
+  
+src/components/Designer/Blocks/Bang.jsx
+  - Added onBang prop
+  - Fires onBang callback when clicked
+  
+src/components/Designer/Blocks/Log.jsx
+  - Same draggable properties as DraggableBlock
+  - Has input port for connections
+  - Displays inputData (from BlockRenderer)
+
+================================================================================
+                         USAGE INSTRUCTIONS
+================================================================================
+
+1. Add a DraggableBlock and type text in it (double-click to edit)
+2. Add a Bang block
+3. Add a Log block
+4. Connect Bang → DraggableBlock (output to input)
+5. Connect DraggableBlock → Log (output to input)
+6. Click the Bang circle
+7. The text from DraggableBlock appears in Log IMMEDIATELY
+
+================================================================================

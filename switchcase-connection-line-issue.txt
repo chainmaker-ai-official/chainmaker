@@ -1,0 +1,143 @@
+# Why SwitchCase Connection Lines Come From Wrong Position
+
+## Problem Description
+When a connection line is created from a SwitchCase output port to another block's input port, the permanent connection line appears to originate from the block's bottom-left corner (an "old output port" position) instead of the actual row-specific output port on the right side of the case row.
+
+## Root Cause Analysis
+
+### 1. Port Type Handling in ConnectionOverlay.jsx
+The `getPortPosition` function in `ConnectionOverlay.jsx` has special logic for SwitchCase row-specific output ports:
+
+```jsx
+if (portType.startsWith('output-')) {
+  const rowIndex = parseInt(portType.split('-')[1]);
+  const rows = blockElement.querySelectorAll('[style*="position: relative"][style*="height: 28px"]');
+  if (rows.length > rowIndex) {
+    const row = rows[rowIndex];
+    const outputPort = row.querySelector('[style*="background-color: #ff00ff"]');
+    // Calculate position...
+  }
+}
+```
+
+**Critical Issue 1: Default Case Handling**
+- For default case: `portType = 'output-default'`
+- `parseInt('default')` returns `NaN`
+- Condition `rows.length > rowIndex` evaluates to `rows.length > NaN`, which is `false`
+- Falls through to regular output port logic
+
+**Critical Issue 2: Regular Output Port Logic Doesn't Apply to SwitchCase**
+The regular output port logic looks for a bottom bar:
+```jsx
+const bottomBar = blockElement.querySelector('[style*="bottom: -1px"]');
+```
+SwitchCase blocks don't have a bottom bar - they have row-specific output ports on the right side.
+
+**Critical Issue 3: Fallback Position is Bottom-Left**
+When no port is found, the fallback position is:
+```jsx
+return {
+  x: blockRect.left + 20 - workspaceRect.left, // Left side of block
+  y: blockRect.bottom - workspaceRect.top      // Bottom of block
+};
+```
+This explains why connection lines appear from the bottom-left corner.
+
+### 2. Data Flow Preservation
+The port type IS being correctly preserved through the data flow:
+1. **SwitchCase.jsx**: `handleOutputMouseDown(e, index)` → `onConnectionStart(id, 'output-${index}', e)`
+2. **useFlowConnections.js**: `startConnection(blockId, portType, e, workspaceRef)` stores `sourcePort: portType`
+3. **Redux connectionsSlice.js**: `addConnection` stores `sourcePort` from payload
+4. **ConnectionOverlay.jsx**: Retrieves `conn.sourcePort` (should be `'output-0'`, `'output-1'`, etc.)
+
+The data is preserved correctly, but the rendering logic has bugs.
+
+### 3. Potential Additional Issues
+
+**CSS Selector Problems:**
+- Query: `[style*="position: relative"][style*="height: 28px"]`
+- Actual row style includes: `position: relative`, `height: 28px`, plus other properties
+- The `*=` operator should match substrings, so this should work
+
+**Color Matching Problems:**
+- Query: `[style*="background-color: #ff00ff"], [style*="backgroundColor: #ff00ff"]`
+- React uses camelCase (`backgroundColor`), not kebab-case (`background-color`)
+- But the selector includes both formats
+
+**Row Index Calculation:**
+- For `portType = 'output-0'`, `rowIndex = 0`
+- Rows are zero-indexed, so `rows[0]` gets the first case row
+- This should work for numeric indices
+
+## Complete Failure Path for Default Case
+
+1. User clicks default output port → `handleOutputMouseDown(e, 'default')`
+2. Port type `'output-default'` is passed through system
+3. `getPortPosition('output-default')` is called
+4. `parseInt('default')` returns `NaN`
+5. `rows.length > NaN` is `false`
+6. Falls to regular output port logic
+7. No bottom bar found (`[style*="bottom: -1px"]`)
+8. Falls to fallback position (bottom-left of block)
+9. Connection line drawn from wrong position
+
+## Failure Path for Case Output Ports (Potential)
+
+Even for numeric indices (e.g., `'output-0'`), there could be issues:
+1. CSS selector doesn't match rows correctly
+2. Output port not found within row
+3. Falls through to same failure path
+
+## Suggested Fixes
+
+### Fix 1: Handle 'default' Special Case
+Modify `getPortPosition` in `ConnectionOverlay.jsx`:
+
+```jsx
+if (portType.startsWith('output-')) {
+  const indexStr = portType.split('-')[1];
+  let rowIndex;
+  
+  if (indexStr === 'default') {
+    // Default case is the last row (after all case rows)
+    const rows = blockElement.querySelectorAll('[style*="position: relative"][style*="height: 28px"]');
+    rowIndex = rows.length - 1; // Last row is default case
+  } else {
+    rowIndex = parseInt(indexStr);
+  }
+  
+  // Rest of logic...
+}
+```
+
+### Fix 2: Improve CSS Selectors
+Make selectors more robust:
+```jsx
+// Look for rows by class or data attribute instead of style
+const rows = blockElement.querySelectorAll('.switch-case-row');
+// Or add data attribute to rows: data-row-type="case" or data-row-type="default"
+```
+
+### Fix 3: Add Error Logging
+Add console logging to debug:
+```jsx
+console.log('Port type:', portType, 'Row index:', rowIndex, 'Rows found:', rows.length);
+```
+
+### Fix 4: Ensure SwitchCase Has Proper Markup
+Add classes or data attributes to SwitchCase rows and output ports for reliable selection.
+
+## Testing the Fix
+
+1. **Default case**: Connection should originate from right side of default row
+2. **Case rows**: Connection should originate from right side of respective case row
+3. **Visual verification**: Lines should visually connect from magenta port rectangles
+
+## Related Files
+
+- `frontend/src/components/Designer/components/ConnectionOverlay.jsx` - Port position calculation
+- `frontend/src/components/Designer/Blocks/SwitchCase.jsx` - Output port rendering
+- `frontend/src/components/Designer/hooks/useFlowConnections.js` - Connection creation
+- `frontend/src/redux/slices/connectionsSlice.js` - Connection storage
+
+The core issue is in `ConnectionOverlay.jsx`'s `getPortPosition` function which doesn't properly handle the `'output-default'` port type and has fragile CSS selectors for locating rows and ports.

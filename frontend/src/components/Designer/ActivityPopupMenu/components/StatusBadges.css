@@ -1,0 +1,56 @@
+/* StatusBadges.css - Badge styles extracted from ActivityPopupMenu.css - New Theme */
+
+/* Added Badge */
+.status-badge.added {
+    background: #000C1D;
+    color: #98C379;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border: 1px solid #98C379;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: statusBadgeBlink 2s infinite;
+}
+
+@keyframes statusBadgeBlink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Soon Badge */
+.status-badge.soon {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #000C1D;
+    color: #56B6C2;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border: 1px solid #56B6C2;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 1;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Session Counter Badge */
+.session-counter-badge {
+    background: #000C1D;
+    color: #D19A66;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border: 1px solid #D19A66;
+    animation: statusBadgeBlink 1s infinite alternate;
+}

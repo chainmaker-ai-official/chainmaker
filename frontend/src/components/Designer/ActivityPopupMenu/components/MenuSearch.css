@@ -1,0 +1,36 @@
+/* MenuSearch.css - Search section styles extracted from ActivityPopupMenu.css - New Theme */
+
+/* Search Section */
+.nested-menu-search-section {
+    padding: 12px 16px;
+    border-bottom: 1px solid #56B6C2;
+    background: #0a1525;
+}
+
+.nested-menu-search-section .search-input {
+    width: 100%;
+    background: #000C1D;
+    border: 1px solid #56B6C2;
+    padding: 8px 12px;
+    color: #ABB2BF;
+    font-size: 0.85rem;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    transition: all 0.1s;
+    box-sizing: border-box;
+}
+
+.nested-menu-search-section .search-input::placeholder {
+    color: #56B6C2;
+    font-style: italic;
+}
+
+.nested-menu-search-section .search-input:focus {
+    outline: none;
+    border-color: #C678DD;
+    background: #0a1525;
+    box-shadow: 0 0 5px rgba(198, 120, 221, 0.3);
+}
+
+.nested-menu-search-section .search-input:hover {
+    border-color: #61AFEF;
+}

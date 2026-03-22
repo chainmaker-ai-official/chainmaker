@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DraggableBlock Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        h1 {
+            color: #64ffda;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #333;
+            border-radius: 6px;
+            border-left: 4px solid #00ff00;
+        }
+        
+        .test-instruction {
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+        
+        .test-result {
+            background: #444;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+        
+        .features-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .features-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #555;
+        }
+        
+        .features-list li::before {
+            content: "✓ ";
+            color: #00ff00;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>DraggableBlock Implementation Test</h1>
+        
+        <div class="test-section">
+            <h3>Features Implemented</h3>
+            <ul class="features-list">
+                <li>Minimum width and height upon loading (120px x 40px)</li>
+                <li>Auto-enter edit mode with flashing cursor for new blocks</li>
+                <li>User typing detection (hasUserTyped state)</li>
+                <li>Click outside behavior: reverts to default label if nothing typed</li>
+                <li>Size preservation in all states (ready mode, edit mode, dragging)</li>
+                <li>Proper object type handling for label prop</li>
+                <li>Consistent minimum dimensions across block and input</li>
+            </ul>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-instruction">Test Scenario 1: New Block Creation</div>
+            <p>When a new block is created:</p>
+            <ul>
+                <li>Block automatically enters edit mode</li>
+                <li>Input field shows with flashing cursor</li>
+                <li>Input field has minimum width of 100px and height of 24px</li>
+                <li>Block container maintains minimum size of 120px x 40px</li>
+            </ul>
+            <div class="test-result">Expected: Block shows edit mode with cursor, maintains minimum size</div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-instruction">Test Scenario 2: Click Outside Without Typing</div>
+            <p>When user clicks outside without typing anything:</p>
+            <ul>
+                <li>Block exits edit mode</li>
+                <li>Label reverts to "Block" (default)</li>
+                <li>Block maintains minimum size</li>
+                <li>No "object" text appears</li>
+            </ul>
+            <div class="test-result">Expected: Block shows "Block" label, maintains size, no object text</div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-instruction">Test Scenario 3: User Types and Clicks Outside</div>
+            <p>When user types text and clicks outside:</p>
+            <ul>
+                <li>Block exits edit mode</li>
+                <li>Label shows the typed text</li>
+                <li>Block maintains minimum size</li>
+                <li>Block remains draggable</li>
+            </ul>
+            <div class="test-result">Expected: Block shows typed text, maintains size, remains draggable</div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-instruction">Test Scenario 4: Double-Click to Edit</div>
+            <p>When user double-clicks an existing block:</p>
+            <ul>
+                <li>Block enters edit mode</li>
+                <li>Input field shows with current label text</li>
+                <li>User can modify the text</li>
+                <li>Press Enter or click outside to save</li>
+            </ul>
+            <div class="test-result">Expected: Block enters edit mode, allows text modification</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>Technical Implementation Details</h3>
+            <ul>
+                <li><strong>State Management:</strong> Added hasUserTyped state to track user input</li>
+                <li><strong>Size Consistency:</strong> Block uses flexbox layout with min-width/min-height</li>
+                <li><strong>Input Styling:</strong> Input field has matching minimum dimensions</li>
+                <li><strong>Type Safety:</strong> Added typeof checks to prevent object display</li>
+                <li><strong>Focus Management:</strong> Auto-focus and select text on edit mode entry</li>
+                <li><strong>Event Handling:</strong> Proper event propagation control</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

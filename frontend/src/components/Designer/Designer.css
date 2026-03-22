@@ -1,0 +1,368 @@
+/* Designer.css - New Theme */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  
+}
+.main-designer-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #000C1D;
+    color: #ABB2BF;
+    box-sizing: border-box;
+    z-index: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.designer-header {
+    background-color: #0a1525;
+    padding: 0;
+    border-bottom: 0px solid #56B6C2;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+}
+
+/* Designer Toolbar styles have been moved to Toolbar.css */
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: #0a1525;
+    color: #C678DD;
+    border: 1px solid rgba(86, 182, 194, 0.4);
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.btn-primary:hover {
+    background-color: #1a2840;
+    border-color: #D19A66;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #98C379;
+    padding: 0 5px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.btn-icon:hover {
+    color: #D19A66;
+}
+.btn-icon:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --- Layout --- */
+.designer-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding-left: 0; 
+    padding-right: 0;
+    margin: 0;
+}
+
+.designer-center-panel {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+    display: flex; 
+    flex-direction: column; 
+    padding: 0;
+}
+
+.workspace {
+    position: relative;
+    overflow: auto;
+    background-color: #0a1525;
+    margin-top: 0;
+    border: 0px solid #56B6C2;
+    width: 100%;
+    min-width: 0;
+    flex: 1;
+    padding: 0;
+    z-index: 0;
+    box-sizing: border-box;
+    position: relative !important;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.workspace::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.5px;
+    background-color: rgba(86, 182, 194, 0.4);
+}
+
+.block-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    z-index: 100;
+    text-align: center;
+}
+
+/* Delete block button */
+.delete-block-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    background: none;
+    border: none;
+    color: #C678DD;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: 
+        opacity 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+    z-index: 99999999;
+    pointer-events: auto;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.delete-block-btn:hover {
+    color: #D19A66;
+    transform: scale(1.15);
+    opacity: 1;
+}
+
+/* Make the delete button visible when hovering over the block */
+.draggable-block:hover .delete-block-btn {
+    opacity: 0.8;
+}
+
+/* Ensure the block content flex layout works with the delete button */
+.block-content .flex {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Update block content to support absolute positioning of delete button */
+.block-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    z-index: 100;
+    position: relative;
+    text-align: center;
+}
+ 
+
+/* --- Block Styles --- */
+.draggable-block {
+    user-select: none;
+    box-sizing: border-box;
+    z-index: 99999 !important; 
+}
+.draggable-block.palette-block {
+    transition: none !important;
+}
+
+/* The style applied to the original element while it is being dragged */
+.draggable-block.is-dragging {
+    z-index: 99999 !important; 
+    opacity: 0.2;
+    border: 2px dashed #56B6C2;
+    box-shadow: none;
+    color: transparent;
+}
+
+/* Drop Placeholder (for blocks) */
+.drop-placeholder {
+    height: 40px;
+    background-color: #0a1525;
+    border: 2px dashed #56B6C2;
+    margin: 0;
+    pointer-events: none;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Colors - Updated to match new theme */
+.block-motion { background-color: #0a2030; color: #56B6C2; } /* Cyan/Teal */
+.block-control { background-color: #201525; color: #C678DD; } /* Soft Orchid Purple */
+.block-event { background-color: #0f1a2a; color: #61AFEF; } /* Azure Sky Blue */
+.block-data { background-color: #1a1a10; color: #D19A66; } /* Muted Peach/Gold */
+.block-operators { background-color: #1a251a; color: #98C379; } /* Sage Green */
+
+/* Workspace and palette blocks */
+.workspace-block, .palette-block {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.draggable-block.palette-block {
+    transition: none !important;
+}
+
+/* Scrollbar styling */
+.workspace::-webkit-scrollbar {
+    width: 6px;
+}
+
+.workspace::-webkit-scrollbar-track {
+    background: #000C1D;
+}
+
+.workspace::-webkit-scrollbar-thumb {
+    background: #56B6C2;
+}
+
+.workspace::-webkit-scrollbar-thumb:hover {
+    background: #C678DD;
+}
+
+/* Block fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Block fade-out animation */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Block fade-in animation */
+.draggable-block.block-fade-in {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Block fade-out animation */
+.draggable-block.block-fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+    pointer-events: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .designer-center-panel {
+        max-width: 100vw;
+        padding: 0;
+    }
+    
+    .workspace {
+        padding: 0;
+    }
+}
+
+/* Connection Point Styles */
+.connection-point {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #61AFEF;
+    border: 2px solid #3d8cc7;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Teal rectangle hover indicator for wire connections */
+.connection-hover {
+    box-shadow: 0 0 10px #56B6C2, 0 0 20px #56B6C2 !important;
+    transform: scale(1.2) !important;
+    z-index: 1001 !important;
+}
+
+.connection-point.input {
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.connection-point.output {
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.connection-point:hover {
+    background-color: #8ec5f0;
+    border-color: #61AFEF;
+    transform: translateY(-50%) scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.connection-point.connected {
+    background-color: #98C379;
+    border-color: #6b9a5a;
+}
+
+.connection-point.connected:hover {
+    background-color: #b0d896;
+    border-color: #98C379;
+}
+
+/* SVG Connection Path Styles */
+.connection-path {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.connection-endpoint {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Menu Bar styles have been moved to Toolbar.css */
+/* --- New Connection Line Styles --- */
+.connection-line-drawing {
+    stroke: #ABB2BF;
+    stroke-width: 2;
+    stroke-dasharray: 8, 4;
+    fill: none;
+    pointer-events: none;
+    animation: dash-move 0.4s linear infinite;
+}
+
+@keyframes dash-move {
+    to {
+        stroke-dashoffset: -12;
+    }
+}
