@@ -1,0 +1,127 @@
+{
+  "activities": [
+    {
+      "id": "generic-001",
+      "label": "Generic Activity",
+      "icon": "",
+      "description": "A generic activity component",
+      "component": "Generic",
+      "enabled": true
+    }
+  ],
+  "trading_modules": [
+    {
+      "id": 1,
+      "component_uuid": "e4a1b2c3-d4e5-4f6a-8b9c-0d1e2f3a4b5c",
+      "title": "Live Order Book",
+      "description": "Real-time DEX Order Book visualization",
+      "category": "Data Provider",
+      "subcategory": "Blockchain",
+      "status": "available",
+      "phase": 1,
+      "color": "#64ffda"
+    },
+    {
+      "id": 50,
+      "component_uuid": "uniswap-router-uuid-2024",
+      "title": "Uniswap Router",
+      "description": "Fetches live blockchain data from Uniswap",
+      "category": "Data Provider",
+      "subcategory": "Blockchain",
+      "status": "available",
+      "phase": 2,
+      "color": "#FFC000"
+    },
+    {
+      "id": 1179,
+      "component_uuid": "1179fc29-6be5-4bb8-af86-b36d741acc98",
+      "title": "Clock/Schedule",
+      "description": "Triggers the bot to run at regular intervals",
+      "category": "System",
+      "subcategory": "Startup",
+      "status": "available",
+      "phase": 1,
+      "color": "#70AD47"
+    },
+    {
+      "id": 11,
+      "component_uuid": "logic-gate-and-uuid-2024",
+      "title": "Logic Gate (AND)",
+      "description": "Combines multiple conditions",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "color": "#ED7D31"
+    },
+    {
+      "id": 12,
+      "component_uuid": "condition-switch-uuid-2024",
+      "title": "Condition Switch",
+      "description": "Checks if entry conditions are met",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "color": "#ED7D31"
+    },
+    {
+      "id": 13,
+      "component_uuid": "switch-router-uuid-2024",
+      "title": "Switch/Router",
+      "description": "Directs traffic based on signal",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "color": "#ED7D31"
+    },
+    {
+      "id": 14,
+      "component_uuid": "safety-brake-uuid-2024",
+      "title": "Safety Brake",
+      "description": "Emergency stop mechanism",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "color": "#ED7D31"
+    },
+    {
+      "id": 52,
+      "component_uuid": "switch-case-uuid-2024",
+      "title": "Switch Case",
+      "description": "Switch-case control flow for multiple conditions",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "color": "#ED7D31"
+    },
+    {
+      "id": 44,
+      "component_uuid": "d5e6f7a8-b9c0-4d1e-2f3a-4b5c6d7e8f9a",
+      "title": "Data View",
+      "description": "JSON Data Viewer",
+      "category": "Data Provider",
+      "subcategory": "Analytics",
+      "status": "available",
+      "phase": 1,
+      "color": "#64ffda"
+    },
+    {
+      "id": 5,
+      "component_uuid": "1a272582-e4d9-4552-bdd5-4bdae52e9376",
+      "title": "Etherscan Gas Node",
+      "description": "Gets current gas prices",
+      "category": "Data Provider",
+      "subcategory": "Blockchain",
+      "status": "available",
+      "phase": 1,
+      "color": "#FFC000"
+    }
+  ],
+  "layout": {
+    "order": ["generic-001"]
+  }
+}

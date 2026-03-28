@@ -1,0 +1,114 @@
+{
+  "activities": [
+    {
+      "id": "live-order-book",
+      "title": "Live Order Book",
+      "description": "Real-time DEX Order Book visualization",
+      "icon": "",
+      "category": "Data Provider",
+      "subcategory": "Blockchain",
+      "status": "available",
+      "phase": 1,
+      "tags": ["DEX", "OrderBook", "Realtime"]
+    },
+    {
+      "id": "uniswap-router",
+      "title": "Uniswap Router",
+      "description": "Fetches live blockchain data from Uniswap",
+      "icon": "",
+      "category": "Data Provider",
+      "subcategory": "Blockchain",
+      "status": "available",
+      "phase": 2,
+      "tags": ["Uniswap", "DEX", "Router"]
+    },
+    {
+      "id": "clock-schedule",
+      "title": "Clock/Schedule",
+      "description": "Triggers the bot to run at regular intervals",
+      "icon": "",
+      "category": "System",
+      "subcategory": "Startup",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Timer", "Schedule"]
+    },
+    {
+      "id": "logic-gate-and",
+      "title": "Logic Gate (AND)",
+      "description": "Combines multiple conditions",
+      "icon": "",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Logic", "AND"]
+    },
+    {
+      "id": "condition-switch",
+      "title": "Condition Switch",
+      "description": "Checks if entry conditions are met",
+      "icon": "",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Logic", "Switch"]
+    },
+    {
+      "id": "switch-router",
+      "title": "Switch/Router",
+      "description": "Directs traffic based on signal",
+      "icon": "",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Logic", "Router"]
+    },
+    {
+      "id": "safety-brake",
+      "title": "Safety Brake",
+      "description": "Emergency stop mechanism",
+      "icon": "",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Safety", "Brake"]
+    },
+    {
+      "id": "switch-case",
+      "title": "Switch Case",
+      "description": "Switch-case control flow for multiple conditions",
+      "icon": "",
+      "category": "Logic",
+      "subcategory": "Control Flow",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Logic", "SwitchCase"]
+    },
+    {
+      "id": "data-view",
+      "title": "Data View",
+      "description": "JSON Data Viewer",
+      "icon": "",
+      "category": "Data Provider",
+      "subcategory": "Analytics",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Data", "Viewer"]
+    },
+    {
+      "id": "etherscan-gas-node",
+      "title": "Etherscan Gas Node",
+      "description": "Gets current gas prices",
+      "icon": "",
+      "category": "Data Provider",
+      "subcategory": "Blockchain",
+      "status": "available",
+      "phase": 1,
+      "tags": ["Gas", "Etherscan"]
+    }
+  ]
+}

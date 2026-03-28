@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #E4EBF5;
+    color: #374151;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  /* Neumorphic */
+  .neumorphic {
+    background: #E4EBF5;
+    box-shadow: -8px -8px 16px rgba(255, 255, 255, 0.8), 8px 8px 16px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    border-radius: 1.5rem;
+  }
+
+  .btn-neu {
+    background: #E4EBF5;
+    color: #6B7280;
+    font-weight: 600;
+    box-shadow: -6px -6px 12px rgba(255, 255, 255, 0.8), 6px 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Chat Bubbles */
+  .bubble {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: bubbleFadeIn 0.35s ease-out forwards;
+  }
+
+  @keyframes bubbleFadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .bot {
+    background: #fff;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    box-shadow: -4px -4px 8px rgba(255, 255, 255, 0.8), 4px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .user {
+    background: #C7D2FE;
+    color: #312E81;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    box-shadow: -3px -3px 6px rgba(255, 255, 255, 0.7), 3px 3px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Designer */
+  .main-designer-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #000C1D;
+    color: #ABB2BF;
+    box-sizing: border-box;
+    z-index: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .designer-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+
+  .designer-center-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .workspace {
+    position: relative;
+    overflow: auto;
+    background-color: #0a1525;
+    width: 100%;
+    flex: 1;
+    padding: 0;
+    z-index: 0;
+    box-sizing: border-box;
+  }
+
+  .draggable-block {
+    user-select: none;
+    box-sizing: border-box;
+    z-index: 99999 !important;
+  }
+
+  .connection-point {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: #61AFEF;
+    border: 2px solid #3d8cc7;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .connection-point.input { left: -8px; top: 50%; transform: translateY(-50%); }
+  .connection-point.output { right: -8px; top: 50%; transform: translateY(-50%); }
+
+  /* Popup Menu */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 12, 29, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000000;
+  }
+
+  .popup-overlay.ctrl-click-overlay {
+    display: block;
+    background-color: transparent;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  .fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  .nested-context-menu {
+    position: relative;
+    background-color: #000C1D;
+    border: 1px solid #56B6C2;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(86, 182, 194, 0.3);
+  }
+
+  /* Chat */
+  .chatbox {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    height: 0px;
+    background: rgba(0, 12, 29, 0.95);
+    border-radius: 0 20px 0px 20px;
+    overflow: hidden;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(86, 182, 194, 0.4);
+    transform: scale(0.25);
+    transform-origin: bottom right;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .chatbox.chat-open {
+    height: 300px;
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .chatbox.chat-full {
+    height: calc(100vh - 80px);
+    bottom: 0;
+    border-radius: 0 20px 0 0;
+    transform: scale(1);
+    opacity: 1;
+  }
+}
